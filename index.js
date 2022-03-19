@@ -1,79 +1,40 @@
 const express = require('express');
 const app = express();
 const Joi = require('joi');
+const logger = require('./middleware/logger');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const config = require('config');
+const courses = require('./routes/courses');
+const home = require('./routes/home');
 
 //JSON Middleware in order to be able to parse JSON from the request Body
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(logger);
+app.use(express.static('public'));
+app.use(helmet());
+app.set('view engine', 'pug'); //geen require nodig!
+app.use('/api/courses', courses);
+app.use('/', home);
 
-//In memory Array of courses
-const courses = [
-    {id:1, name:"course 1"},
-    {id:2, name:"course 2"},
-    {id:3, name:"course 3"},
-]
-
-//Default route, Website root GET http://localhost:PORT
-app.get('/', (req,res) => {
-    res.send('Website home page');
-})
-
-//Get all courses route GET http://localhost:PORT/api/courses
-app.get('/api/courses',(req,res)=>{
-    res.send(courses);
-})
-
-//Get one course route GET http://localhost:PORT/api/courses/id
-app.get('/api/courses/:id',(req, res)=>{
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if(!course) return res.status(404).send('Course does not exist');
-    res.send(course);
-})
-
-//Add one course route POST http://localhost:PORT/api/courses
-app.post('/api/courses', (req,res)=>{
-    //if(!req.body.name || req.body.name.length < 3 ) return res.status(400).send('name not right');
-    const result = validateCourse(req.body);
-    if(result.error) return res.status(400).send(result.error.details[0].message)
-
-    const course = {
-        id: courses.length +1,
-        name: req.body.name
-    }
-    courses.push(course);
-    res.send(course);
-})
-
-//Edit one course route PUT http://localhost:PORT/api/courses/id
-app.put('/api/courses/:id',(req,res) => {
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if(!course) return res.status(404).send('Course does not exist');
-    
-    const result = validateCourse(req.body);
-    if(result.error) return res.status(400).send(result.error.details[0].message)
-
-    course.name = req.body.name;
-    res.send(course);
-})
-
-//Delete one course route DELETE http://localhost:PORT/api/courses/id
-app.delete('/api/courses/:id', (req,res)=>{
-
-const course = courses.find(c => c.id === parseInt(req.params.id));
-    if(!course) return res.status(404).send('Course does not exist');
-const index = courses.indexOf(course);
-
-    courses.splice(index,1) ;
-    res.send(course);  
-
-})
-
-//Joi Validation of user input JSON (req.body)
-function validateCourse(course){
-    const schema= Joi.object({
-        name: Joi.string().min(3).required()
-    });
-    return schema.validate(course);
+if (app.get('env') === 'development'){
+    app.use(morgan('tiny'));
+    console.log('Morgan enabled');
 }
+
+console.log('Application Name:', config.get('name'));
+console.log('Application Mail:', config.get('mail.host'));
+console.log('Application Psw:', config.get('mail.password'));
+
+
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`app: ${app.get('env')}`);
+
+
+
+
+
 
 //Check if there is an environment variable PORT on system
 //If not use default port 3000

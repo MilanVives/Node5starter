@@ -31,3 +31,14 @@ Content-Type: application/json
 {
     "name": "course9"
 }
+
+###
+//URL Encoded route POST http://localhost:PORT/api/courses
+POST http://localhost:3000/api/courses 
+Content-Type: application/x-www-form-urlencoded
+
+name=mycourse
+
+###
+//Get the static website files GET http://localhost:PORT/public/readme.txt
+get http://localhost:3000/readme.txt
