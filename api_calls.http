@@ -1,0 +1,33 @@
+//Default route, Website root GET http://localhost:PORT
+get http://localhost:3000/
+
+###
+//Get all courses route GET http://localhost:PORT/api/courses
+get http://localhost:3000/api/courses
+
+###
+//Add one course route POST http://localhost:PORT/api/courses
+post http://localhost:3000/api/courses
+Content-Type: application/json
+
+{
+    "name": "course4"
+}
+
+###
+//Edit one course route PUT http://localhost:PORT/api/courses/id
+put http://localhost:3000/api/courses/1
+Content-Type: application/json
+
+{
+    "name": "course9"
+}
+
+###
+//Delete one course route DELETE http://localhost:PORT/api/courses/id
+delete http://localhost:3000/api/courses/1
+Content-Type: application/json
+
+{
+    "name": "course9"
+}
