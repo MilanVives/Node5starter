@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const Joi = require('joi');
 const logger = require('./middleware/logger');
 const helmet = require('helmet');
 const morgan = require('morgan');

@@ -20,7 +20,7 @@ put http://localhost:3000/api/courses/1
 Content-Type: application/json
 
 {
-    "name": "course9"
+    "name": "courseEdited"
 }
 
 ###
